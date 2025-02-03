@@ -1,0 +1,10 @@
+#!/bin/bash -login
+
+#load modules
+module purge
+
+cd ${SLURM_SUBMIT_DIR}
+
+# run python code below
+
+scontrol show job $SLURM_JOB_ID
