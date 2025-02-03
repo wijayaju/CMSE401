@@ -1,0 +1,38 @@
+Evolution initiated...
+Evolution Completed
+Best evolved model:  1.0*x0*x1*sin(x2)
+Best evolved model error:  [np.float64(0.0), 12]
+
+real	0m32.396s
+user	0m28.515s
+sys	0m0.620s
+JobId=49604959 JobName=CMSE401
+   UserId=wijayaju(6090026) GroupId=CMSE401_SS25_S001(2982) MCS_label=N/A
+   Priority=59908 Nice=0 Account=general QOS=wijayaju
+   JobState=RUNNING Reason=None Dependency=(null)
+   Requeue=1 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=0:0
+   RunTime=00:00:42 TimeLimit=00:10:00 TimeMin=N/A
+   SubmitTime=2025-02-03T11:24:46 EligibleTime=2025-02-03T11:24:46
+   AccrueTime=2025-02-03T11:24:46
+   StartTime=2025-02-03T11:25:52 EndTime=2025-02-03T11:35:52 Deadline=N/A
+   SuspendTime=None SecsPreSuspend=0 LastSchedEval=2025-02-03T11:25:52 Scheduler=Backfill
+   Partition=general-long AllocNode:Sid=dev-amd20:2828045
+   ReqNodeList=(null) ExcNodeList=(null)
+   NodeList=lac-401
+   BatchHost=lac-401
+   NumNodes=1 NumCPUs=1 NumTasks=1 CPUs/Task=1 ReqB:S:C:T=0:0:*:*
+   ReqTRES=cpu=1,mem=1G,node=1,billing=155
+   AllocTRES=cpu=1,mem=1G,node=1,billing=155
+   Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=*
+   MinCPUsNode=1 MinMemoryNode=1G MinTmpDiskNode=0
+   Features=[intel16|intel18|(amr|acm)|nvf|nal|nif|agg|agx|(nfh|neh)|nel] DelayBoot=00:00:00
+   OverSubscribe=OK Contiguous=0 Licenses=(null) Network=(null)
+   Command=/mnt/ufs18/home-096/wijayaju/Repositories/CMSE401/Quiz/Quiz1Demo/jobScript.sb
+   WorkDir=/mnt/ufs18/home-096/wijayaju/Repositories/CMSE401/Quiz/Quiz1Demo
+   Comment=stdout=/mnt/ufs18/home-096/wijayaju/Repositories/CMSE401/Quiz/Quiz1Demo/slurm-49604959.out 
+   StdErr=/mnt/ufs18/home-096/wijayaju/Repositories/CMSE401/Quiz/Quiz1Demo/slurm-49604959.out
+   StdIn=/dev/null
+   StdOut=/mnt/ufs18/home-096/wijayaju/Repositories/CMSE401/Quiz/Quiz1Demo/slurm-49604959.out
+   TresPerTask=cpu=1
+   
+

@@ -1,10 +1,17 @@
 #!/bin/bash -login
+#SBATCH --time 00:10:00
+#SBATCH -N 1
+#SBATCH -c 1
+#SBATCH --mem 1gb
+#SBATCH -J CMSE401
 
 #load modules
 module purge
+module load Miniforge3
 
 cd ${SLURM_SUBMIT_DIR}
 
 # run python code below
+time python Evolve.py
 
 scontrol show job $SLURM_JOB_ID
