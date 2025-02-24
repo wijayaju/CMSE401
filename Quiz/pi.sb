@@ -1,0 +1,13 @@
+#!/bin/bash -login
+#SBATCH --time 00:05:00
+#SBATCH --nodes 1
+#SBATCH --cores 10
+#SBATCH --mem 1gb
+#SBATCH -J CMSE401
+
+gcc -lm pi_serial.c
+time ./a.out
+
+gcc -lm -fopenmp pi_parallel.c
+time ./a.out
+

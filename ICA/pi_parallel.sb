@@ -1,0 +1,13 @@
+#!/bin/bash --login
+#SBATCH --nodes 4
+#SBATCH --cores 2
+#SBATCH --time 00:10:00
+#SBATCH --mem 1gb
+#SBATCH -J CMSE401
+
+# Usage: sbatch pi_parallel.sb
+cd ../PCA/
+g++ -std=c++20 -fopenmp integral_solver.c
+./a.out
+
+scontrol show job $SLURM_JOB_ID

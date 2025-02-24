@@ -1,0 +1,34 @@
+/var/lib/slurmd/job50027414/slurm_script: line 12: a.out: command not found
+
+real	0m0.005s
+user	0m0.001s
+sys	0m0.000s
+JobId=50027414 JobName=CMSE401
+   UserId=wijayaju(6090026) GroupId=CMSE401_SS25_S001(2982) MCS_label=N/A
+   Priority=60874 Nice=0 Account=general QOS=wijayaju
+   JobState=RUNNING Reason=None Dependency=(null)
+   Requeue=1 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=0:0
+   RunTime=00:00:07 TimeLimit=00:10:00 TimeMin=N/A
+   SubmitTime=2025-02-10T11:13:31 EligibleTime=2025-02-10T11:13:31
+   AccrueTime=2025-02-10T11:13:31
+   StartTime=2025-02-10T11:15:19 EndTime=2025-02-10T11:25:19 Deadline=N/A
+   SuspendTime=None SecsPreSuspend=0 LastSchedEval=2025-02-10T11:15:19 Scheduler=Backfill
+   Partition=general-long AllocNode:Sid=dev-amd20:2263265
+   ReqNodeList=(null) ExcNodeList=(null)
+   NodeList=lac-[393-396]
+   BatchHost=lac-393
+   NumNodes=4 NumCPUs=8 NumTasks=8 CPUs/Task=1 ReqB:S:C:T=0:0:2:*
+   ReqTRES=cpu=8,mem=4G,node=4,billing=622
+   AllocTRES=cpu=8,mem=4G,node=4,billing=622
+   Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=*
+   MinCPUsNode=1 MinMemoryNode=1G MinTmpDiskNode=0
+   Features=[intel16|intel18|(amr|acm)|nvf|nal|nif|agg|agx|(nfh|neh)|nel] DelayBoot=00:00:00
+   OverSubscribe=OK Contiguous=0 Licenses=(null) Network=(null)
+   Command=/mnt/ufs18/home-096/wijayaju/Repositories/CMSE401/ICA/pi_parallel.sb
+   WorkDir=/mnt/ufs18/home-096/wijayaju/Repositories/CMSE401/ICA
+   Comment=stdout=/mnt/ufs18/home-096/wijayaju/Repositories/CMSE401/ICA/slurm-50027414.out 
+   StdErr=/mnt/ufs18/home-096/wijayaju/Repositories/CMSE401/ICA/slurm-50027414.out
+   StdIn=/dev/null
+   StdOut=/mnt/ufs18/home-096/wijayaju/Repositories/CMSE401/ICA/slurm-50027414.out
+   
+

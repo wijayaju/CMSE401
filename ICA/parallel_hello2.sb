@@ -1,0 +1,13 @@
+#!/bin/bash --login
+#SBATCH -c=20
+#SBATCH --mem=1gb
+#SBATCH --time=00:10:00
+#SBATCH -J=CMSE401
+
+for ((i=0;i<20;i++))
+do
+	gcc -fopenmp parallel_hello2.c
+	echo "AHAIODHAIUd"
+	srun -c=$i ./a.out
+done
+
