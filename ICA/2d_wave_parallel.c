@@ -26,28 +26,24 @@ int main(int argc, char ** argv) {
     //make mesh
     double * h_z = (double *) malloc(nx*ny*sizeof(double));
     double ** z = malloc(ny * sizeof(double*));
-    #pragma omp for shared(nx,ny,h_z,z) schedule(static)
     for (r=0; r<ny; r++)
     	z[r] = &h_z[r*nx];
 
     //Velocity
     double * h_v = (double *) malloc(nx*ny*sizeof(double));
     double ** v = malloc(ny * sizeof(double*));
-    #pragma omp for shared(nx,ny,h_v,v) schedule(static)
     for (r=0; r<ny; r++)
         v[r] = &h_v[r*nx];
 
     //Acceleration
     double * h_a = (double *) malloc(nx*ny*sizeof(double));
     double ** a = malloc(ny * sizeof(double*));
-    #pragma omp for shared(nx,ny,h_a,a) schedule(static)
     for (r=0; r<ny; r++)
         a[r] = &h_a[r*nx];
 
     //output image
     char * o_img = (char *) malloc(sz.width*sz.height*sizeof(char));
     char **output = malloc(sz.height * sizeof(char*));
-    #pragma omp for shared(sz, o_img, output) schedule(static)
     for (int r=0; r<sz.height; r++)
         output[r] = &o_img[r*sz.width];
 
@@ -60,7 +56,6 @@ int main(int argc, char ** argv) {
     dt= (tmax-0.0)/(double)(nt-1);
 
     double x,y; 
-    #pragma omp for shared(nx,ny,dx,dy,x,y,z,v,a) schedule(static)
     for (r=0;r<ny;r++)  {
 	for (c=0;c<nx;c++)  {
 		x = min+(double)c*dx;
@@ -73,22 +68,25 @@ int main(int argc, char ** argv) {
     
     dx2inv=1.0/(dx*dx);
     dy2inv=1.0/(dy*dy);
-
-    #pragma omp for shared(nt,nx,ny,z,dx2inv,dy2inv,a,v) schedule(static) 
+    omp_set_num_threads(10);
     for(it=0;it<nt-1;it++) {
 	//printf("%d\n",it);
-        for (r=1;r<ny-1;r++)  
+	#pragma omp parallel
+	{
+	#pragma omp for collapse(2)
+	for (r=1;r<ny-1;r++)  
     	    for (c=1;c<nx-1;c++)  {
 		double ax = (z[r+1][c]+z[r-1][c]-2.0*z[r][c])*dx2inv;
 		double ay = (z[r][c+1]+z[r][c-1]-2.0*z[r][c])*dy2inv;
 		a[r][c] = (ax+ay)/2;
 	    }
-        for (r=1;r<ny-1;r++)  
+	#pragma omp for collapse(2)
+	for (r=1;r<ny-1;r++)  
     	    for (c=1;c<nx-1;c++)  {
                v[r][c] = v[r][c] + dt*a[r][c];
                z[r][c] = z[r][c] + dt*v[r][c];
             }
-
+	}
 	if (it % 100 ==0)
 	{
     	    double mx,mn;
