@@ -1,0 +1,14 @@
+#!/bin/bash
+#SBATCH --time=01:00:00
+#SBATCH -c 1
+#SBATCH -N 1
+#SBATCH --gres=gpu:1
+#SBATCH --mem=4gb
+
+cd ${SLURM_SUBMIT_DIR}
+
+
+time srun ./mycudaprogram
+
+#Prints out job statistics
+js ${SLURM_JOB_ID}
