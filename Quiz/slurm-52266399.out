@@ -1,0 +1,9 @@
+/var/lib/slurmd/job52266399/slurm_script: line 9: nvcc: command not found
+-396.261713 0.000000
+
+
+real	0m9.915s
+user	0m0.091s
+sys	0m0.016s
+sacct: error: Unknown arguments:
+sacct: error:  52266399
