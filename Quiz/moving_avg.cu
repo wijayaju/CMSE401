@@ -40,10 +40,10 @@ int main(){
     //Copy to device
     cudaMemcpy(c_series, series, num_steps*sizeof(double), cudaMemcpyHostToDevice);
     cudaMemcpy(c_avg, avg, (num_steps-range)*sizeof(double), cudaMemcpyHostToDevice);
-    int blocks = 1000;
-    int threads = 100000;
+    int blocks = 1000;     // (num_steps - range) / threads
+    int threads = 100000;  // 1000
     //Compute averages with CUDA parallelization
-    for (int i=0; i<steps-range; i++){
+    for (int i=0; i<steps-range; i++){  // DONT NEED THIS
 	compute_avgs<<<blocks, threads>>>(c_series, c_avg, range);
         //for (int j=0; j<=range;j++){
         //    avg[i]+=series[i+j];
