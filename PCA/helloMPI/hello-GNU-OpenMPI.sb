@@ -1,0 +1,20 @@
+#!/bin/bash --login
+#SBATCH --time=00:05:00
+#SBATCH --ntasks=8
+#SBATCH --mem-per-cpu=1G
+
+
+# load the 2018 GCC and OpenMPI libraries
+module purge
+module load foss/2018b
+
+# compile c program
+mpicc mpi-hello.c -o hello-GNU-OpenMPI.exe
+
+# run
+srun hello-GNU-OpenMPI.exe
+
+# compile fortran program
+mpif77 mpi-hello.f -o hello-GNU-OpenMPI-fortran.exe
+# run
+srun hello-GNU-OpenMPI-fortran.exe

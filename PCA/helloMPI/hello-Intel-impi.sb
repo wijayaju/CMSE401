@@ -1,0 +1,15 @@
+#!/bin/bash --login
+#SBATCH --time=00:05:00
+#SBATCH --ntasks=8
+#SBATCH --mem-per-cpu=1G
+
+ml purge 
+ml intel/2021a
+
+cd $SLURM_SUBMIT_DIR
+
+mpicc mpi-hello.c -o hello-Intel-impi.exe
+mpirun -np 8 ./hello-Intel-impi.exe 
+
+mpiifort mpi-hello.f -o hello-Intel-impi-fortran.exe
+mpirun -np 8 ./hello-Intel-impi-fortran.exe 

@@ -41,14 +41,13 @@ int main(){
     cudaMemcpy(c_series, series, num_steps*sizeof(double), cudaMemcpyHostToDevice);
     cudaMemcpy(c_avg, avg, (num_steps-range)*sizeof(double), cudaMemcpyHostToDevice);
     int threads = 1000;
-    int blocks = (num_steps - range) / threads
+    int blocks = (num_steps - range) / threads;
     //Compute averages with CUDA parallelization
-	compute_avgs<<<blocks, threads>>>(c_series, c_avg, range);
+    compute_avgs<<<blocks, threads>>>(c_series, c_avg, range);
         //for (int j=0; j<=range;j++){
         //    avg[i]+=series[i+j];
         //}
         //avg[i]/=(double)range + 1.0;
-    }
 
     //Copy back to host
     cudaMemcpy(series, c_series, num_steps*sizeof(double), cudaMemcpyDeviceToHost);

@@ -1,0 +1,15 @@
+#!/bin/bash --login
+#SBATCH --time=00:05:00
+#SBATCH --ntasks=8
+#SBATCH --mem-per-cpu=1G
+
+ml purge 
+ml intel/2019a OpenMPI
+
+cd $SLURM_SUBMIT_DIR
+
+mpicc mpi-hello.c -o hello-Intel-OpenMPI.exe
+mpirun -n 8 ./hello-Intel-OpenMPI.exe        # this combination does not work with srun
+
+mpifort mpi-hello.f -o hello-Intel-OpenMPI-fortran.exe
+mpirun -np 8 ./hello-Intel-OpenMPI-fortran.exe  #this combination does not with with srun

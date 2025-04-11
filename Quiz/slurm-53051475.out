@@ -1,0 +1,3 @@
+Rank: 0Rank 0: Caught MPI error: MPI_ERR_RANK: invalid rank
+Rank 0: Caught MPI error: MPI_ERR_RANK: invalid rank
+I am rank 0 and received: 0 

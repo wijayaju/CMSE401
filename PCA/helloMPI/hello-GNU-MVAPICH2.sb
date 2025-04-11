@@ -1,0 +1,20 @@
+#!/bin/bash --login 
+#SBATCH --time=00:05:00
+#SBATCH --ntasks=8
+#SBATCH --mem-per-cpu=1G
+#SBATCH --constrain=intel18       # module MVAPICH2 needs to run on intel18.
+
+cd $SLURM_SUBMIT_DIR
+
+ml purge
+ml GCC/4.9.3-2.25
+ml MVAPICH2
+
+mpicc mpi-hello.c -o hello-GNU-MVAPICH2.exe
+
+srun ./hello-GNU-MVAPICH2.exe
+
+mpif77 mpi-hello.f -o hello-GNU-MVAPICH2-fortran.exe
+
+srun ./hello-GNU-MVAPICH2-fortran.exe
+

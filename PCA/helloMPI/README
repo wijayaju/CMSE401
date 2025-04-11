@@ -1,0 +1,27 @@
+#!/bin/bash
+# HPCC supports the following MPI Libraries
+#
+
+# Running each library is slightly different on the cluster.  The following examples are given:
+sbatch hello-GNU-OpenMPI.sb
+sbatch hello-MPICH.sb 
+sbatch hello-Intel-OpenMPI.sb     # srun does not equal to mpirun in this case.
+sbatch hello-Intel-impi.sb
+
+# A bash script run.sh is provided for running a test for 4 cases.
+# To run run.sh on a dev node, go to this directory and run: 
+bash run.sh
+
+# A job script run.sb is an example for running "run.sh" as a batch job on a compute node, 
+# to launch run.sh as a job, run:
+sbatch run.sb 
+
+# If you are connected to a ondemand interactive desk top, make sure
+# that your desk top has sufficient resources, such as ntasks, ncpus, 
+# memory, etc. (see run.sb for reference). You can run run.sh in the
+# way as running from a dev node in this directory.
+bash run.sh
+
+# NOTE: All the scripts would use the source files and run the compiler. Therefore
+# one should always run the scripts from the current directory which is the directory
+# the scripts are stored.
