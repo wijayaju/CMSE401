@@ -1,0 +1,10 @@
+#!/bin/bash --login
+#SBATCH --time=00:20:00
+#SBATCH -c 50
+#SBATCH --mem=2G
+#SBATCH -J HW4
+#SBATCH -o pp_benchmark.out
+
+SEED=${SLURM_JOBID}
+
+time ./revGOL cmse2.txt $SEED

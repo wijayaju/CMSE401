@@ -137,6 +137,11 @@ int main(int argc, char *argv[]) {
     int rand_seed;
     time_t t;
 
+    int rank, size;
+
+    MPI_Init(&argc, &argv);
+
+
     if (argc > 2)
         rand_seed = (atoi(argv[2])+1)*7;
     else
@@ -194,7 +199,7 @@ int main(int argc, char *argv[]) {
 	    }
 	}
 
-        // printf("Done with Generation %d with best=%d fitness=%d\n", g,best, pop_fitness[best]);
+        printf("Done with Generation %d with best=%d fitness=%d\n", g,best, pop_fitness[best]);
 	
         int rate = (int) ((double) pop_fitness[best]/(n*n) * 100);
 

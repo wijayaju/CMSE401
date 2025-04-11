@@ -1,0 +1,6 @@
+#!/bin/bash --login
+#SBATCH --time=04:00:00
+#SBATCH -J HW4
+#SBATCH -o serial_benchmark.out
+
+bash timecheck.sh
