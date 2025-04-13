@@ -281,7 +281,7 @@ int main(int argc, char *argv[]) {
         }
         printf("%d %d\n",n,  M+1);
         print_plate(population[overall_best], n);
-        printf("\nResult Fitness=%d over %d iterations:\n",pop_fitness[overall_best], ngen);
+        printf("\nResult Fitness=%d over %d iterations:\n",overall_best, ngen);
     } else {
         MPI_Send(&pop_fitness[best], 1,MPI_INT,0,1,MPI_COMM_WORLD);
         MPI_Send(population[best],(n+2)*(n+2),MPI_CHAR,0,1,MPI_COMM_WORLD);
