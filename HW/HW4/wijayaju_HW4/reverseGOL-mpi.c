@@ -230,8 +230,8 @@ int main(int argc, char *argv[]) {
             MPI_Recv(&tmp_fit,1,MPI_INT,proc,1,MPI_COMM_WORLD, &status);
 
             if (tmp_fit > pop_fitness[best]) {
-                best = tmp_best;
-                
+                best = tmp_best;    
+            }
         }
         printf("%d %d\n",n,  M+1);
         print_plate(population[best], n);
