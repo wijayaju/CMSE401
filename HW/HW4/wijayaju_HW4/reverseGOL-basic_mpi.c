@@ -147,9 +147,9 @@ int main(int argc, char *argv[]) {
     MPI_Status status;
 
     if (argc > 2)
-        rand_seed = (atoi(argv[2])+1)*7 + rank;
+        rand_seed = (atoi(argv[2])+1)*7;
     else
-    	rand_seed = (unsigned int) time(&t) + rank;
+    	rand_seed = (unsigned int) time(&t);
     
     printf("Random Seed = %d\n", rand_seed);
     srand(rand_seed);
