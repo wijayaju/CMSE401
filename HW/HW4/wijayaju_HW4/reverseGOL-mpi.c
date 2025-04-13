@@ -198,10 +198,11 @@ int main(int argc, char *argv[]) {
                 pop_fitness[best] = n*n;
                 M++;                 
             } else {
-		if (sbest == best) 
-		    sbest = i;
+        		if (sbest == best) 
+        		    sbest = i;
+            }
 	    }
-	}
+    }
         printf("Done with Generation %d with best=%d fitness=%d\n", g,best, pop_fitness[best]);
         
         int rate = (int) ((double) pop_fitness[best]/(n*n) * 100);
