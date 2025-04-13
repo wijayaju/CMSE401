@@ -208,7 +208,9 @@ int main(int argc, char *argv[]) {
         if (rank == 0) {
             MPI_Recv(&tmp_best,1,MPI_INT,rank+1,2,MPI_COMM_WORLD, &status);
             MPI_Recv(&tmp_fit,1,MPI_INT,rank+1,2,MPI_COMM_WORLD, &status);
-            if (tmp_fit > pop_fitness[best]) {
+            if (pop_fitness[tmp_best] < pop_fitness[best]) {
+                population[best] = population[tmp_best];
+                sbest = best;
                 best = tmp_best;    
             }
             MPI_Send(&best,1,MPI_INT,rank+1,2,MPI_COMM_WORLD);
@@ -218,7 +220,9 @@ int main(int argc, char *argv[]) {
             MPI_Send(&pop_fitness[best],1,MPI_INT,0,2,MPI_COMM_WORLD);
             MPI_Recv(&tmp_best,1,MPI_INT,0,2,MPI_COMM_WORLD, &status);
             MPI_Recv(&tmp_fit,1,MPI_INT,0,2,MPI_COMM_WORLD, &status);
-             if (tmp_fit > pop_fitness[best]) {
+             if (pop_fitness[tmp_best] < pop_fitness[best]) {
+                population[best] = population[tmp_best];
+                sbest = best;
                 best = tmp_best;    
             }
         } else {
@@ -226,7 +230,9 @@ int main(int argc, char *argv[]) {
             MPI_Send(&pop_fitness[best],1,MPI_INT,rank+1,2,MPI_COMM_WORLD);
             MPI_Recv(&tmp_best,1,MPI_INT,rank+1,2,MPI_COMM_WORLD, &status);
             MPI_Recv(&tmp_fit,1,MPI_INT,rank+1,2,MPI_COMM_WORLD, &status);
-             if (tmp_fit > pop_fitness[best]) {
+             if (pop_fitness[tmp_best] < pop_fitness[best]) {
+                population[best] = population[tmp_best];
+                sbest = best;
                 best = tmp_best;    
             }
         }
@@ -258,7 +264,7 @@ int main(int argc, char *argv[]) {
             MPI_Recv(&tmp_best,1,MPI_INT,proc,1,MPI_COMM_WORLD, &status);
             MPI_Recv(&tmp_fit,1,MPI_INT,proc,1,MPI_COMM_WORLD, &status);
 
-            if (tmp_fit > pop_fitness[best]) {
+            if (pop_fitness[tmp_best] < pop_fitness[best]) {
                 best = tmp_best;    
             }
         }
