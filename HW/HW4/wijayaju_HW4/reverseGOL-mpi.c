@@ -266,7 +266,7 @@ int main(int argc, char *argv[]) {
             MPI_Recv(&tmp_fit,1,MPI_INT,proc,1,MPI_COMM_WORLD, &status);
             MPI_Recv(buffer_plate,(n+2)*(n+2),MPI_CHAR,proc,1,MPI_COMM_WORLD, &status);
             if (tmp_fit < pop_fitness[best]) {
-                overall_best = tmp_best;
+                overall_best = tmp_fit;
                 memcpy(population[best], buffer_plate, (n+2)*(n+2));
             }
         }
