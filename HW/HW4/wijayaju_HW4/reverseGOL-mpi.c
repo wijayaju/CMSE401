@@ -142,6 +142,7 @@ int main(int argc, char *argv[]) {
     MPI_Init(&argc, &argv);
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &size);
+    MPI_Status status;
 
     if (argc > 2)
         rand_seed = (atoi(argv[2])+1)*7;
@@ -172,8 +173,7 @@ int main(int argc, char *argv[]) {
             makerandom(population[i], n);
     }
 
-    {
-	g = rank;
+    for(int g=0; g < ngen; g++) {
 	for(int i=0; i<npop; i++) {
 	    char *plate[2];
     	    plate[0] = population[i];
@@ -201,47 +201,51 @@ int main(int argc, char *argv[]) {
 	    }
 	}
 
-	if (rank == 0) {
-		for(int proc=1; proc < size; proc++) {
-			MPI_Recv(& );
-			MPI_Recv(& );
-		}
-    		printf("%d %d\n",n,  M+1);
-    		print_plate(population[best], n);
-    		printf("\nResult Fitness=%d over %d iterations:\n",pop_fitness[best], ngen);
-		
-	} else {
-        	printf("Done with Generation %d with best=%d fitness=%d\n", g,best, pop_fitness[best]);
+        // printf("Done with Generation %d with best=%d fitness=%d\n", g,best, pop_fitness[best]);
 	
-        	int rate = (int) ((double) pop_fitness[best]/(n*n) * 100);
+        int rate = (int) ((double) pop_fitness[best]/(n*n) * 100);
 
-        	for(int i=0; i <npop; i++) {
-            		if (i == sbest) {
-				cross(population[i], population[best],  n); 
-				sbest = 1;
-	    		} else if (i != best) {
-                		if (i < npop/3) // mutate top 1/3 based on best
-		   			mutate(population[i], population[best],  n, rate); 
-				else if (i < (npop*2)/3)  // cross with next 1/3 
-		   			cross(population[i], population[best],n);
-				else // Last 1/3 is new random numbers. 
-		   			makerandom(population[i], n);
-	    		}
-		}
-		MPI_Send();
-		MPI_Send();
+        for(int i=0; i <npop; i++) {
+            if (i == sbest) {
+		cross(population[i], population[best],  n); 
+		sbest = 1;
+	    } else if (i != best) {
+                if (i < npop/3) // mutate top 1/3 based on best
+		   mutate(population[i], population[best],  n, rate); 
+		else if (i < (npop*2)/3)  // cross with next 1/3 
+		   cross(population[i], population[best],n);
+		else // Last 1/3 is new random numbers. 
+		   makerandom(population[i], n);
+	    }
 	}
     }
+    if (rank==0) {
+        char solution = population[best];
+        int best_fit = pop_fitness;
+        char proc_sol;
+        int proc_fit;
+        
+        for (int proc=1; proc < size; proc++) {
+            MPI_Recv(&proc_sol,1,MPI_INT,proc,1,MPI_COMM_WORLD, &status);
+            MPI_Recv(&proc_fit,1,MPI_INT,proc,1,MPI_COMM_WORLD, &status);
 
-    printf("%d %d\n",n,  M+1);
-    print_plate(population[best], n);
-    printf("\nResult Fitness=%d over %d iterations:\n",pop_fitness[best], ngen);
-
+            if (proc_fit > best_fit) {
+                solution = proc_sol;
+                best_fit = proc_fit;
+            }
+        }
+        printf("%d %d\n",n,  M+1);
+        print_plate(solution, n);
+        printf("\nResult Fitness=%d over %d iterations:\n",best_fit, ngen);
+    } else {
+        MPI_Send(&population[best],1,MPI_INT,0,1,MPI_COMM_WORLD);
+        MPI_Send(&pop_fitness[best],1,MPI_INT,0,1,MPI_COMM_WORLD);
+    }
     free(target_plate);
     free(buffer_plate);
     for(int i=0; i < npop; i++)
 	free(population[i]);
-    
+
     MPI_Finalize();
     
     return 0;
