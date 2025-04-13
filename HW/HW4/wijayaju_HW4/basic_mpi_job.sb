@@ -4,9 +4,9 @@
 #SBATCH -c 1
 #SBATCH --mem=100G
 #SBATCH -J HW4
-#SBATCH -o mpi_benchmark.out
+#SBATCH -o basic_mpi_benchmark.out
 #SBATCH --open-mode=append
 
 SEED=${SLURM_PROC_ID}
 
-time mpirun -np 50 ./revGOL-mpi cmse2.txt $SEED
+time mpirun -np 50 ./revGOL-basic_mpi cmse2.txt $SEED
