@@ -4,6 +4,8 @@
 #include <stdlib.h>
 #include <assert.h>
 
+#include <mpi.h>
+
 #define max_nodes 264       /* Max number of nodes that we should test */
 #define str_length 50       /* Largest string that can be used for hostnames */
 
@@ -220,13 +222,13 @@ int main(int argc, char *argv[]) {
 	}
     }
     if (rank==0) {
-        char solution = population[best];
+        char* solution = population[best];
         int best_fit = pop_fitness;
-        char proc_sol;
+        char* proc_sol = (char *) calloc((n+2)*(n+2),sizeof(char));
         int proc_fit;
         
         for (int proc=1; proc < size; proc++) {
-            MPI_Recv(&proc_sol,1,MPI_INT,proc,1,MPI_COMM_WORLD, &status);
+            MPI_Recv(proc_sol,(n+2)*(n+2),MPI_CHAR,proc,1,MPI_COMM_WORLD, &status);
             MPI_Recv(&proc_fit,1,MPI_INT,proc,1,MPI_COMM_WORLD, &status);
 
             if (proc_fit > best_fit) {
@@ -238,7 +240,7 @@ int main(int argc, char *argv[]) {
         print_plate(solution, n);
         printf("\nResult Fitness=%d over %d iterations:\n",best_fit, ngen);
     } else {
-        MPI_Send(&population[best],1,MPI_INT,0,1,MPI_COMM_WORLD);
+        MPI_Send(population[best],(n+2)*(n+2),MPI_CHAR,0,1,MPI_COMM_WORLD);
         MPI_Send(&pop_fitness[best],1,MPI_INT,0,1,MPI_COMM_WORLD);
     }
     free(target_plate);

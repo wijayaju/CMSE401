@@ -194,7 +194,7 @@ int main(int argc, char *argv[]) {
 	    }
 	}
 
-        // printf("Done with Generation %d with best=%d fitness=%d\n", g,best, pop_fitness[best]);
+        printf("Done with Generation %d with best=%d fitness=%d\n", g,best, pop_fitness[best]);
 	
         int rate = (int) ((double) pop_fitness[best]/(n*n) * 100);
 

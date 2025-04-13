@@ -1,4 +1,4 @@
-all: revGOL gol 
+all: revGOL revGOL-mpi gol 
 
 CC:=mpicc
 EXT:=c
@@ -25,7 +25,7 @@ gameoflife.o: gameoflife.$(EXT)
 gol: gameoflife.o png_util.o
 	$(CC) $(FLAGS) -o gol gameoflife.o png_util.o
 
-test: revGOL data.txt
+test: revGOL revGOL-mpi data.txt
 	./revGOL data.txt
 	mpiexec ./revGOL-mpi data.txt
 
