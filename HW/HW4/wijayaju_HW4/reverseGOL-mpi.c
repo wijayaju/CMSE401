@@ -179,9 +179,9 @@ int main(int argc, char *argv[]) {
     int chunk_size = npop / size;
     int start_idx = rank * chunk_size;
     if (rank == size - 1) {
-        end_idx = npop;
+        int end_idx = npop;
     } else {
-        end_idx = start_idx + chunk_size;
+        int end_idx = start_idx + chunk_size;
     }
     
     for(int g=0; g < ngen; g++) {
@@ -254,13 +254,13 @@ int main(int argc, char *argv[]) {
 
         for(int i=start_idx; i < end_idx; i++) {
             if (i == sbest) {
-        		cross(population[i], population[best],  n); 
-        		sbest = 1;
-    	    } else if (i != best) {
+		cross(population[i], population[best],  n); 
+		sbest = 1;
+	    } else if (i != best) {
                 if (i < npop/3) // mutate top 1/3 based on best
-        		   mutate(population[i], population[best],  n, rate); 
-    		else if (i < (npop*2)/3)  // cross with next 1/3 
-    		   cross(population[i], population[best],n);
+		   mutate(population[i], population[best],  n, rate); 
+		else if (i < (npop*2)/3)  // cross with next 1/3 
+		   cross(population[i], population[best],n);
 		else // Last 1/3 is new random numbers. 
 		   makerandom(population[i], n);
 	    }
