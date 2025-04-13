@@ -213,7 +213,7 @@ int main(int argc, char *argv[]) {
             }
             MPI_Send(&best,1,MPI_INT,rank+1,2,MPI_COMM_WORLD);
             MPI_Send(&pop_fitness[best],1,MPI_INT,rank+1,2,MPI_COMM_WORLD);
-        } elif (rank == size - 1) {
+        } else if (rank == size - 1) {
             MPI_Send(&best,1,MPI_INT,0,2,MPI_COMM_WORLD);
             MPI_Send(&pop_fitness[best],1,MPI_INT,0,2,MPI_COMM_WORLD);
             MPI_Recv(&tmp_best,1,MPI_INT,0,2,MPI_COMM_WORLD, &status);
@@ -239,7 +239,7 @@ int main(int argc, char *argv[]) {
             if (i == sbest) {
 		cross(population[i], population[best],  n); 
 		sbest = 1;
-	    } elif (i != best) {
+	    } else if (i != best) {
                 if (i < npop/3) // mutate top 1/3 based on best
 		   mutate(population[i], population[best],  n, rate); 
 		else if (i < (npop*2)/3)  // cross with next 1/3 
