@@ -147,12 +147,12 @@ int main(int argc, char *argv[]) {
     MPI_Status status;
 
     if (argc > 2)
-        rand_seed = (atoi(argv[2])+1)*7;
+        rand_seed = (atoi(argv[2])+1)*7 + rank;
     else
-    	rand_seed = (unsigned int) time(&t);
+    	rand_seed = (unsigned int) time(&t) + rank;
     
     printf("Random Seed = %d\n", rand_seed);
-    srand(rand_seed + rank);
+    srand(rand_seed);
 
     printf("%d %d %d %d\n", rand() % 100, rand() % 100, rand() % 100, rand() % 100);
     char * test_plate;
@@ -223,23 +223,23 @@ int main(int argc, char *argv[]) {
     }
 
     if (rank==0) {
-            int tmp_best = best;
-            int tmp_fit = pop_fitness[best];
-        
+        int overall_best = pop_fitness[best];
+        int tmp_fit;
+        memcpy(buffer_plate, population[best], (n+2)*(n+2));
         for (int proc=1; proc < size; proc++) {
-            MPI_Recv(&tmp_best,1,MPI_INT,proc,1,MPI_COMM_WORLD, &status);
             MPI_Recv(&tmp_fit,1,MPI_INT,proc,1,MPI_COMM_WORLD, &status);
-
-            if (tmp_fit > pop_fitness[best]) {
-                best = tmp_best;    
+            MPI_Recv(buffer_plate,(n+2)*(n+2),MPI_CHAR,proc,1,MPI_COMM_WORLD, &status);
+            if (tmp_fit < pop_fitness[best]) {
+                overall_best = tmp_fit;
+                memcpy(population[best], buffer_plate, (n+2)*(n+2));
             }
         }
         printf("%d %d\n",n,  M+1);
-        print_plate(population[best], n);
-        printf("\nResult Fitness=%d over %d iterations:\n",pop_fitness[best], ngen);
+        print_plate(population[overall_best], n);
+        printf("\nResult Fitness=%d over %d iterations:\n",pop_fitness[overall_best], ngen);
     } else {
-        MPI_Send(&best,1,MPI_INT,0,1,MPI_COMM_WORLD);
-        MPI_Send(&pop_fitness[best],1,MPI_INT,0,1,MPI_COMM_WORLD);
+        MPI_Send(&pop_fitness[best], 1,MPI_INT,0,1,MPI_COMM_WORLD);
+        MPI_Send(population[best],(n+2)*(n+2),MPI_CHAR,0,1,MPI_COMM_WORLD);
     }
     
     free(target_plate);

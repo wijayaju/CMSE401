@@ -147,12 +147,12 @@ int main(int argc, char *argv[]) {
     MPI_Status status;
 
     if (argc > 2)
-        rand_seed = (atoi(argv[2])+1)*7;
+        rand_seed = (atoi(argv[2])+1)*7 + rank;
     else
-    	rand_seed = (unsigned int) time(&t);
+    	rand_seed = (unsigned int) time(&t) + rank;
     
     printf("Random Seed = %d\n", rand_seed);
-    srand(rand_seed + rank);
+    srand(rand_seed);
 
     printf("%d %d %d %d\n", rand() % 100, rand() % 100, rand() % 100, rand() % 100);
     char * test_plate;
