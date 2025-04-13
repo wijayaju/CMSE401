@@ -239,7 +239,7 @@ int main(int argc, char *argv[]) {
             if (i == sbest) {
 		cross(population[i], population[best],  n); 
 		sbest = 1;
-	    } else if (i != best) {
+	    } elif (i != best) {
                 if (i < npop/3) // mutate top 1/3 based on best
 		   mutate(population[i], population[best],  n, rate); 
 		else if (i < (npop*2)/3)  // cross with next 1/3 
