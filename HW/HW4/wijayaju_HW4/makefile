@@ -27,7 +27,7 @@ gol: gameoflife.o png_util.o
 
 test: revGOL revGOL-mpi data.txt
 	./revGOL data.txt
-	mpiexec ./revGOL-mpi data.txt
+	mpiexec -np 1 ./revGOL-mpi data.txt
 
 clean:
 	rm *.o

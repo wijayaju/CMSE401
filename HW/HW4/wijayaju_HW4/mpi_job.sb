@@ -1,0 +1,12 @@
+#!/bin/bash --login
+#SBATCH --time=00:20:00
+#SBATCH --ntasks=50
+#SBATCH -c 1
+#SBATCH --mem=100G
+#SBATCH -J HW4
+#SBATCH -o mpi_basic_benchmark.out
+#SBATCH --open-mode=append
+
+SEED=${SLURM_ARRAY_TASK_ID}
+
+time mpirun -np 50 ./revGOL cmse2.txt $SEED
