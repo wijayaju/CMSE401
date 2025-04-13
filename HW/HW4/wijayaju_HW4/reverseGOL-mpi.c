@@ -151,12 +151,10 @@ int main(int argc, char *argv[]) {
     else
 	rand_seed = (unsigned int) time(&t);
     
-    if (rank == 0)
-        printf("Random Seed = %d\n", rand_seed);
+    printf("Random Seed = %d\n", rand_seed);
     srand(rand_seed);
 
-    if (rank == 0)
-        printf("%d %d %d %d\n", rand() % 100, rand() % 100, rand() % 100, rand() % 100);
+    printf("%d %d %d %d\n", rand() % 100, rand() % 100, rand() % 100, rand() % 100);
     char * test_plate;
     char * buffer_plate; 
     char * target_plate;  
@@ -191,19 +189,14 @@ int main(int argc, char *argv[]) {
             sbest = best;
     	    best = i;    
             if (pop_fitness[best] == 0) {
-                if (rank == 0)
-                    printf("Perfect previous plate found\n");
+                printf("Perfect previous plate found\n");
                 char * temp = target_plate;
     	        target_plate = population[best];
          		population[best] = temp;
-
-                if (rank == 0) {
-            		printf("%d %d\n", n, M);
-                    print_plate(target_plate, n);
-                }
+            	printf("%d %d\n", n, M);
+                print_plate(target_plate, n);
                 pop_fitness[best] = n*n;
-                M++;
-               }                 
+                M++;                 
             } else {
 		if (sbest == best) 
 		    sbest = i;
@@ -229,21 +222,20 @@ int main(int argc, char *argv[]) {
     }
 
     if (rank==0) {
-            int overall_best = best;
-            int best_fit = pop_fitness[best];
-            int proc_fit = best_fit;
+            int tmp_best = best;
+            int tmp_fit = pop_fitness[best];
         
         for (int proc=1; proc < size; proc++) {
-            MPI_Recv(&best,1,MPI_INT,proc,1,MPI_COMM_WORLD, &status);
-            MPI_Recv(&proc_fit,1,MPI_INT,proc,1,MPI_COMM_WORLD, &status);
+            MPI_Recv(&tmp_best,1,MPI_INT,proc,1,MPI_COMM_WORLD, &status);
+            MPI_Recv(&tmp_fit,1,MPI_INT,proc,1,MPI_COMM_WORLD, &status);
 
-            if (proc_fit < best_fit)
-                best_fit = proc_fit;
-                overall_best = best;
+            if (tmp_fit > pop_fitness[best]) {
+                best = tmp_best;
+                
         }
         printf("%d %d\n",n,  M+1);
-        print_plate(population[overall_best], n);
-        printf("\nResult Fitness=%d over %d iterations:\n",best_fit, ngen);
+        print_plate(population[best], n);
+        printf("\nResult Fitness=%d over %d iterations:\n",pop_fitness[best], ngen);
     } else {
         MPI_Send(&best,1,MPI_INT,0,1,MPI_COMM_WORLD);
         MPI_Send(&pop_fitness[best],1,MPI_INT,0,1,MPI_COMM_WORLD);
