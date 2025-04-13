@@ -214,8 +214,8 @@ int main(int argc, char *argv[]) {
     }
         int tmp_fit;
         if (rank == 0) {
-            MPI_Recv(&tmp_fit,1,MPI_INT,rank+1,2,MPI_COMM_WORLD, &status);
-            MPI_Recv(buffer_plate,(n+2)*(n+2),MPI_CHAR,rank+1,2,MPI_COMM_WORLD, &status);
+            MPI_Recv(&tmp_fit,1,MPI_INT,size-1,2,MPI_COMM_WORLD, &status);
+            MPI_Recv(buffer_plate,(n+2)*(n+2),MPI_CHAR,size-1,2,MPI_COMM_WORLD, &status);
             if (tmp_fit < pop_fitness[best]) {
                 sbest = best;
                 memcpy(population[sbest], buffer_plate, (n+2)*(n+2) * sizeof(char));
