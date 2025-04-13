@@ -178,10 +178,11 @@ int main(int argc, char *argv[]) {
 
     int chunk_size = npop / size;
     int start_idx = rank * chunk_size;
+    int end_idx;
     if (rank == size - 1) {
-        int end_idx = npop;
+        end_idx = npop;
     } else {
-        int end_idx = start_idx + chunk_size;
+        end_idx = start_idx + chunk_size;
     }
     
     for(int g=0; g < ngen; g++) {
