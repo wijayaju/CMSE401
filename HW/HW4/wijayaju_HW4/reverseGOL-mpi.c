@@ -176,8 +176,16 @@ int main(int argc, char *argv[]) {
             makerandom(population[i], n);
     }
 
+    int chunk_size = npop / size;
+    int start_idx = rank * chunk_size;
+    if (rank == size - 1) {
+        end_idx = npop;
+    } else {
+        end_idx = start_idx + chunk_size;
+    }
+    
     for(int g=0; g < ngen; g++) {
-	for(int i=0; i<npop; i++) {
+	for(int i=start_idx; i<end_idx; i++) {
 	    char *plate[2];
     	plate[0] = population[i];
     	plate[1] = buffer_plate;
@@ -229,8 +237,8 @@ int main(int argc, char *argv[]) {
         } else {
             MPI_Send(&pop_fitness[best],1,MPI_INT,(rank+1)%size,2,MPI_COMM_WORLD);
             MPI_Send(&population[best],(n+2)*(n+2),MPI_CHAR,(rank+1)%size,2,MPI_COMM_WORLD);
-            MPI_Recv(&tmp_fit,1,MPI_INT,rank+size-1,2,MPI_COMM_WORLD, &status);
-            MPI_Recv(buffer_plate,(n+2)*(n+2),MPI_CHAR,rank+size-1,2,MPI_COMM_WORLD, &status);
+            MPI_Recv(&tmp_fit,1,MPI_INT,(rank+size-1)%size,2,MPI_COMM_WORLD, &status);
+            MPI_Recv(buffer_plate,(n+2)*(n+2),MPI_CHAR,(rank+size-1)%size,2,MPI_COMM_WORLD, &status);
              if (tmp_fit < pop_fitness[best]) {
                 sbest = best;
                 memcpy(population[sbest], buffer_plate, (n+2)*(n+2) * sizeof(char));
@@ -244,15 +252,15 @@ int main(int argc, char *argv[]) {
         
         int rate = (int) ((double) pop_fitness[best]/(n*n) * 100);
 
-        for(int i=0; i <npop; i++) {
+        for(int i=start_idx; i < end_idx; i++) {
             if (i == sbest) {
-		cross(population[i], population[best],  n); 
-		sbest = 1;
-	    } else if (i != best) {
+        		cross(population[i], population[best],  n); 
+        		sbest = 1;
+    	    } else if (i != best) {
                 if (i < npop/3) // mutate top 1/3 based on best
-		   mutate(population[i], population[best],  n, rate); 
-		else if (i < (npop*2)/3)  // cross with next 1/3 
-		   cross(population[i], population[best],n);
+        		   mutate(population[i], population[best],  n, rate); 
+    		else if (i < (npop*2)/3)  // cross with next 1/3 
+    		   cross(population[i], population[best],n);
 		else // Last 1/3 is new random numbers. 
 		   makerandom(population[i], n);
 	    }
