@@ -150,10 +150,13 @@ int main(int argc, char *argv[]) {
         rand_seed = (atoi(argv[2])+1)*7;
     else
 	rand_seed = (unsigned int) time(&t);
-    printf("Random Seed = %d\n", rand_seed);
+    
+    if (rank == 0)
+        printf("Random Seed = %d\n", rand_seed);
     srand(rand_seed);
 
-    printf("%d %d %d %d\n", rand() % 100, rand() % 100, rand() % 100, rand() % 100);
+    if (rank == 0)
+        printf("%d %d %d %d\n", rand() % 100, rand() % 100, rand() % 100, rand() % 100);
     char * test_plate;
     char * buffer_plate; 
     char * target_plate;  
@@ -168,43 +171,66 @@ int main(int argc, char *argv[]) {
 
     for(int i=0; i < npop; i++) {
         pop_fitness[i] = n*n;
-	population[i] = (char *) calloc((n+2)*(n+2),sizeof(char)); 
+    	population[i] = (char *) calloc((n+2)*(n+2),sizeof(char)); 
         if (i < npop/2)
-	    mutate(population[i], target_plate,  n, 10); 
-	else
+    	    mutate(population[i], target_plate,  n, 10); 
+    	else
             makerandom(population[i], n);
     }
 
     for(int g=0; g < ngen; g++) {
 	for(int i=0; i<npop; i++) {
 	    char *plate[2];
-    	    plate[0] = population[i];
-    	    plate[1] = buffer_plate;
-    	    iteration(plate, 0, n);
+    	plate[0] = population[i];
+    	plate[1] = buffer_plate;
+    	iteration(plate, 0, n);
 
-            pop_fitness[i] = fitness(buffer_plate, target_plate, n);
+        pop_fitness[i] = fitness(buffer_plate, target_plate, n);
  
 	    if (pop_fitness[i] < pop_fitness[best]) { 
-               sbest = best;
-	       best = i;    
-               if (pop_fitness[best] == 0) {
-                   printf("Perfect previous plate found\n");
-		   char * temp = target_plate;
-	           target_plate = population[best];
- 		   population[best] = temp;
-		   printf("%d %d\n", n, M);
-                   print_plate(target_plate, n);
-                   pop_fitness[best] = n*n;
-                   M++;
+            sbest = best;
+    	    best = i;    
+            if (pop_fitness[best] == 0) {
+                if (rank == 0)
+                    printf("Perfect previous plate found\n");
+                char * temp = target_plate;
+    	        target_plate = population[best];
+         		population[best] = temp;
+
+                if (rank == 0) {
+            		printf("%d %d\n", n, M);
+                    print_plate(target_plate, n);
+                }
+                pop_fitness[best] = n*n;
+                M++;
                }                 
             } else {
 		if (sbest == best) 
 		    sbest = i;
 	    }
 	}
+        printf("Done with Generation %d with best=%d fitness=%d\n", g,best, pop_fitness[best]);
 
-        // printf("Done with Generation %d with best=%d fitness=%d\n", g,best, pop_fitness[best]);
-	
+        if (rank==0) {
+            int overall_best = best;
+            int best_fit = pop_fitness[best];
+            int proc_fit = best_fit;
+        
+        for (int proc=1; proc < size; proc++) {
+            MPI_Recv(&best,1,MPI_INT,proc,1,MPI_COMM_WORLD, &status);
+            MPI_Recv(&proc_fit,1,MPI_INT,proc,1,MPI_COMM_WORLD, &status);
+
+            if (proc_fit < best_fit)
+                best_fit = proc_fit;
+        }
+        printf("%d %d\n",n,  M+1);
+        print_plate(solution, n);
+        printf("\nResult Fitness=%d over %d iterations:\n",best_fit, ngen);
+    } else {
+        MPI_Send(&best,1,MPI_INT,0,1,MPI_COMM_WORLD);
+        MPI_Send(&pop_fitness[best],1,MPI_INT,0,1,MPI_COMM_WORLD);
+    }
+        
         int rate = (int) ((double) pop_fitness[best]/(n*n) * 100);
 
         for(int i=0; i <npop; i++) {
@@ -221,28 +247,7 @@ int main(int argc, char *argv[]) {
 	    }
 	}
     }
-    if (rank==0) {
-        char* solution = population[best];
-        int best_fit = pop_fitness;
-        char* proc_sol = (char *) calloc((n+2)*(n+2),sizeof(char));
-        int proc_fit;
-        
-        for (int proc=1; proc < size; proc++) {
-            MPI_Recv(proc_sol,(n+2)*(n+2),MPI_CHAR,proc,1,MPI_COMM_WORLD, &status);
-            MPI_Recv(&proc_fit,1,MPI_INT,proc,1,MPI_COMM_WORLD, &status);
-
-            if (proc_fit > best_fit) {
-                solution = proc_sol;
-                best_fit = proc_fit;
-            }
-        }
-        printf("%d %d\n",n,  M+1);
-        print_plate(solution, n);
-        printf("\nResult Fitness=%d over %d iterations:\n",best_fit, ngen);
-    } else {
-        MPI_Send(population[best],(n+2)*(n+2),MPI_CHAR,0,1,MPI_COMM_WORLD);
-        MPI_Send(&pop_fitness[best],1,MPI_INT,0,1,MPI_COMM_WORLD);
-    }
+    
     free(target_plate);
     free(buffer_plate);
     for(int i=0; i < npop; i++)
