@@ -220,7 +220,7 @@ int main(int argc, char *argv[]) {
             MPI_Send(&population[best],(n+2)*(n+2),MPI_CHAR,0,2,MPI_COMM_WORLD);
             MPI_Recv(&tmp_fit,1,MPI_INT,0,2,MPI_COMM_WORLD, &status);
             MPI_Recv(buffer_plate,(n+2)*(n+2),MPI_CHAR,0,2,MPI_COMM_WORLD, &status);
-             if (tmp_Fit < pop_fitness[best]) {
+             if (tmp_fit < pop_fitness[best]) {
                 sbest = best;
                 memcpy(population[sbest], buffer_plate, (n+2)*(n+2) * sizeof(char));
                 pop_fitness[sbest] = tmp_fit;
@@ -273,12 +273,11 @@ int main(int argc, char *argv[]) {
         printf("%d %d\n",n,  M+1);
         print_plate(population[overall_best], n);
         printf("\nResult Fitness=%d over %d iterations:\n",pop_fitness[overall_best], ngen);
-        free(overall_best);
     } else {
         MPI_Send(&pop_fitness[best], 1,MPI_INT,0,1,MPI_COMM_WORLD);
         MPI_Send(population[best],(n+2)*(n+2),MPI_CHAR,0,1,MPI_COMM_WORLD);
     }
-    free(tmp_fit);
+
     free(target_plate);
     free(buffer_plate);
     for(int i=0; i < npop; i++)
