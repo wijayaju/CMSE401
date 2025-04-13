@@ -215,22 +215,22 @@ int main(int argc, char *argv[]) {
             }
             MPI_Send(&pop_fitness[best],1,MPI_INT,rank+1,2,MPI_COMM_WORLD);
             MPI_Send(&population[best],(n+2)*(n+2),MPI_CHAR,rank+1,2,MPI_COMM_WORLD);
-        } else if (rank == size - 1) {
-            MPI_Send(&pop_fitness[best],1,MPI_INT,0,2,MPI_COMM_WORLD);
-            MPI_Send(&population[best],(n+2)*(n+2),MPI_CHAR,0,2,MPI_COMM_WORLD);
-            MPI_Recv(&tmp_fit,1,MPI_INT,0,2,MPI_COMM_WORLD, &status);
-            MPI_Recv(buffer_plate,(n+2)*(n+2),MPI_CHAR,0,2,MPI_COMM_WORLD, &status);
-             if (tmp_fit < pop_fitness[best]) {
-                sbest = best;
-                memcpy(population[sbest], buffer_plate, (n+2)*(n+2) * sizeof(char));
-                pop_fitness[sbest] = tmp_fit;
-                best = sbest;   
-            }
+        // } else if (rank == size - 1) {
+        //     MPI_Send(&pop_fitness[best],1,MPI_INT,0,2,MPI_COMM_WORLD);
+        //     MPI_Send(&population[best],(n+2)*(n+2),MPI_CHAR,0,2,MPI_COMM_WORLD);
+        //     MPI_Recv(&tmp_fit,1,MPI_INT,0,2,MPI_COMM_WORLD, &status);
+        //     MPI_Recv(buffer_plate,(n+2)*(n+2),MPI_CHAR,0,2,MPI_COMM_WORLD, &status);
+        //      if (tmp_fit < pop_fitness[best]) {
+        //         sbest = best;
+        //         memcpy(population[sbest], buffer_plate, (n+2)*(n+2) * sizeof(char));
+        //         pop_fitness[sbest] = tmp_fit;
+        //         best = sbest;   
+        //     }
         } else {
-            MPI_Send(&pop_fitness[best],1,MPI_INT,rank+1,2,MPI_COMM_WORLD);
-            MPI_Send(&population[best],(n+2)*(n+2),MPI_CHAR,rank+1,2,MPI_COMM_WORLD);
-            MPI_Recv(&tmp_fit,1,MPI_INT,rank+1,2,MPI_COMM_WORLD, &status);
-            MPI_Recv(buffer_plate,(n+2)*(n+2),MPI_CHAR,rank+1,2,MPI_COMM_WORLD, &status);
+            MPI_Send(&pop_fitness[best],1,MPI_INT,(rank+1)%size,2,MPI_COMM_WORLD);
+            MPI_Send(&population[best],(n+2)*(n+2),MPI_CHAR,(rank+1)%size,2,MPI_COMM_WORLD);
+            MPI_Recv(&tmp_fit,1,MPI_INT,rank+size-1,2,MPI_COMM_WORLD, &status);
+            MPI_Recv(buffer_plate,(n+2)*(n+2),MPI_CHAR,rank+size-1,2,MPI_COMM_WORLD, &status);
              if (tmp_fit < pop_fitness[best]) {
                 sbest = best;
                 memcpy(population[sbest], buffer_plate, (n+2)*(n+2) * sizeof(char));
@@ -239,7 +239,8 @@ int main(int argc, char *argv[]) {
             }
         }
         
-        printf("Done with Generation %d with best=%d fitness=%d\n", g,best, pop_fitness[best]);
+        if (rank == 0)
+            printf("Done with Generation %d with best=%d fitness=%d\n", g,best, pop_fitness[best]);
         
         int rate = (int) ((double) pop_fitness[best]/(n*n) * 100);
 
