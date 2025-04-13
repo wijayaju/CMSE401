@@ -227,6 +227,27 @@ int main(int argc, char *argv[]) {
 	    }
 	}
     }
+
+    if (rank==0) {
+            int overall_best = best;
+            int best_fit = pop_fitness[best];
+            int proc_fit = best_fit;
+        
+        for (int proc=1; proc < size; proc++) {
+            MPI_Recv(&best,1,MPI_INT,proc,1,MPI_COMM_WORLD, &status);
+            MPI_Recv(&proc_fit,1,MPI_INT,proc,1,MPI_COMM_WORLD, &status);
+
+            if (proc_fit < best_fit)
+                best_fit = proc_fit;
+                overall_best = best;
+        }
+        printf("%d %d\n",n,  M+1);
+        print_plate(population[overall, n);
+        printf("\nResult Fitness=%d over %d iterations:\n",best_fit, ngen);
+    } else {
+        MPI_Send(&best,1,MPI_INT,0,1,MPI_COMM_WORLD);
+        MPI_Send(&pop_fitness[best],1,MPI_INT,0,1,MPI_COMM_WORLD);
+    }
     
     free(target_plate);
     free(buffer_plate);
