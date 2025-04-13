@@ -152,7 +152,7 @@ int main(int argc, char *argv[]) {
     	rand_seed = (unsigned int) time(&t);
     
     printf("Random Seed = %d\n", rand_seed);
-    srand(rand_seed);
+    srand(rand_seed + rank);
 
     printf("%d %d %d %d\n", rand() % 100, rand() % 100, rand() % 100, rand() % 100);
     char * test_plate;
