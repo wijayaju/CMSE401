@@ -1,0 +1,4 @@
+#!/bin/bash --login
+#SBATCH --qos=scavenger
+
+echo "Hello world"
